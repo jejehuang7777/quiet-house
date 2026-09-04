@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+  <rect width="1400" height="760" fill="#f7f5ef"/>
+  <style>
+    .box{fill:#fff;stroke:#24324a;stroke-width:3}.gate{fill:#fff4d8;stroke:#9b6b00;stroke-width:3}.stop{fill:#ffe9e7;stroke:#a63d32;stroke-width:3}.done{fill:#e7f5ee;stroke:#287456;stroke-width:3}.t{font:600 25px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#172033;text-anchor:middle}.s{font:19px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#33415c;text-anchor:middle}.a{stroke:#48566f;stroke-width:4;fill:none;marker-end:url(#m)}.dash{stroke:#9b6b00;stroke-width:4;fill:none;stroke-dasharray:10 8;marker-end:url(#m2)}
+  </style>
+  <defs>
+    <marker id="m" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#48566f"/></marker>
+    <marker id="m2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#9b6b00"/></marker>
+  </defs>
+  <text x="700" y="48" class="t" font-size="34">Quiet House — synthetic workflow</text>
+  <rect class="box" x="40" y="100" width="220" height="92" rx="18"/><text class="t" x="150" y="137">Task queue</text><text class="s" x="150" y="169">synthetic only</text>
+  <rect class="box" x="315" y="100" width="240" height="92" rx="18"/><text class="t" x="435" y="137">Strands agent</text><text class="s" x="435" y="169">local qwen3:14b</text>
+  <polygon class="gate" points="700,82 825,146 700,210 575,146"/><text class="t" x="700" y="136">Route</text><text class="s" x="700" y="166">+ interrupt_now</text>
+  <rect class="done" x="900" y="70" width="270" height="84" rx="18"/><text class="t" x="1035" y="105">AUTO</text><text class="s" x="1035" y="135">bounded local action</text>
+  <rect class="gate" x="900" y="185" width="270" height="84" rx="18"/><text class="t" x="1035" y="220">QUEUE</text><text class="s" x="1035" y="250">persist bounded item</text>
+  <rect class="stop" x="900" y="300" width="270" height="84" rx="18"/><text class="t" x="1035" y="335">HARD_GATE</text><text class="s" x="1035" y="365">safe stop; no action</text>
+  <rect class="done" x="510" y="455" width="300" height="92" rx="18"/><text class="t" x="660" y="492">Immutable receipt</text><text class="s" x="660" y="524">every route; exclusive create</text>
+  <rect class="box" x="155" y="455" width="240" height="92" rx="18"/><text class="t" x="275" y="492">Local summary</text><text class="s" x="275" y="524">four visible outcomes</text>
+  <polygon class="gate" points="1080,445 1210,501 1080,557 950,501"/><text class="t" x="1080" y="492">Interrupt?</text><text class="s" x="1080" y="521">timing decision</text>
+  <rect class="gate" x="875" y="625" width="205" height="76" rx="18"/><text class="t" x="978" y="656">Review now</text><text class="s" x="978" y="684">interrupt=true</text>
+  <rect class="box" x="1135" y="625" width="225" height="76" rx="18"/><text class="t" x="1248" y="656">Normal window</text><text class="s" x="1248" y="684">interrupt=false</text>
+  <path class="a" d="M260 146 H315"/><path class="a" d="M555 146 H575"/>
+  <path class="a" d="M825 120 L900 111"/><path class="a" d="M812 166 L900 220"/><path class="a" d="M790 190 L900 326"/>
+  <path class="a" d="M1035 154 V420 H750 V455"/><path class="a" d="M1035 269 V405 H700 V455"/><path class="a" d="M900 342 H660 V455"/><path class="a" d="M510 501 H395"/>
+  <path class="dash" d="M1035 384 V430 L1080 445"/><path class="dash" d="M1025 550 L978 625"/><path class="dash" d="M1135 550 L1248 625"/>
+  <text class="s" x="858" y="102">AUTO</text><text class="s" x="856" y="205">QUEUE</text><text class="s" x="846" y="303">HARD_GATE</text>
+  <text x="700" y="735" class="s">AUTO, QUEUE, and HARD_GATE all create receipts; HARD_GATE separately selects review now or the normal review window.</text>
+</svg>

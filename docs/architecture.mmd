@@ -1,0 +1,14 @@
+flowchart LR
+    A[Synthetic task queue] --> B[Strands agent\nqwen3:14b local]
+    B --> C{Route and\ninterrupt_now}
+    C -->|AUTO| D[Bounded local action]
+    C -->|QUEUE| E[Persist queue item]
+    C -->|HARD_GATE| F[Safe stop]
+    F --> G{interrupt_now}
+    G -->|true| H[Owner review now]
+    G -->|false| I[Normal review window]
+    D --> J[Immutable receipt]
+    E --> J
+    F --> J
+    J --> K[Local summary]
+

@@ -1,0 +1,56 @@
+name: Route or interrupt misclassification
+description: Report a synthetic case where route and urgency appear inconsistent.
+title: "[Routing]: "
+labels: [routing, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: Use synthetic data only. Route permission and interrupt urgency are reviewed separately.
+  - type: dropdown
+    id: observed-route
+    attributes:
+      label: Observed route
+      options: [AUTO, QUEUE, HARD_GATE]
+    validations:
+      required: true
+  - type: dropdown
+    id: expected-route
+    attributes:
+      label: Expected route
+      options: [AUTO, QUEUE, HARD_GATE]
+    validations:
+      required: true
+  - type: dropdown
+    id: observed-interrupt
+    attributes:
+      label: Observed interrupt_now
+      options: ["true", "false"]
+    validations:
+      required: true
+  - type: dropdown
+    id: expected-interrupt
+    attributes:
+      label: Expected interrupt_now
+      options: ["true", "false"]
+    validations:
+      required: true
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Minimal synthetic fixture
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: reasoning
+    attributes:
+      label: Why should permission or urgency differ?
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: This report contains synthetic data only and no credentials or private identifiers.
+          required: true
