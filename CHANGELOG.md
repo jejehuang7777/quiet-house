@@ -4,12 +4,12 @@ All notable changes to this project will be documented here.
 
 ## [Unreleased]
 
-- Public-alpha repository initialized; no tagged release is represented yet.
+- No changes yet.
 
-## [0.1.0-alpha.1] - planned
+## [0.1.0-alpha.1] - 2026-09-04
 
 - Added structured `AUTO`, `QUEUE`, and `HARD_GATE` routing for four synthetic task cases.
-- Kept `interrupt_now` independent from route permission.
+- Defined route as the permission/outcome control. In the bundled alpha, `AUTO` and `QUEUE` use `interrupt_now=false`; within `HARD_GATE`, `interrupt_now` selects immediate versus normal-window review.
 - Added deterministic bounded execution, queueing, hard-gate stops, immutable JSON receipts, and a local summary.
 - Added no-model functional tests and an optional capped local Strands/Ollama smoke.
 - Added public-maintainer documentation, issue templates, and no-model CI configuration.
@@ -17,4 +17,4 @@ All notable changes to this project will be documented here.
 [Unreleased]: https://github.com/jejehuang7777/quiet-house/compare/v0.1.0-alpha.1...HEAD
 [0.1.0-alpha.1]: https://github.com/jejehuang7777/quiet-house/releases/tag/v0.1.0-alpha.1
 
-The repository is live; the release link becomes valid only after the planned tag and GitHub release are created.
+This release is a bounded public alpha, not a production deployment, security certification, comparative-performance result, or evidence of external adoption.

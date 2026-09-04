@@ -122,4 +122,4 @@ Receipts use exclusive-create semantics so a completed run cannot silently overw
 
 ## Project status
 
-Quiet House is pre-release alpha software. The planned first tag is `v0.1.0-alpha.1`; no tagged release or production deployment is represented by this repository yet.
+Quiet House is prerelease alpha software. The first versioned prerelease is `v0.1.0-alpha.1`; it does not represent a production deployment, security certification, comparative-performance result, or evidence of external adoption.
