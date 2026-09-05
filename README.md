@@ -40,7 +40,7 @@ The alpha has two deliberately separate layers:
 - a Strands/Ollama router that returns a structured decision for at most four synthetic tasks; and
 - a deterministic executor that validates the decision, performs only the matching bounded local behavior, and writes receipts with exclusive-create semantics.
 
-The no-model test suite injects fixed decisions, so the safety behavior can be checked without contacting Ollama. The model-backed smoke is optional, local-only, capped at one generation per task, and has no retry, repair, reprompt, or provider fallback. `HARD_GATE` never performs the requested blocked action.
+The no-model test suite injects fixed decisions, so the safety behavior can be checked without contacting Ollama. Every provider result includes validated provenance: injected decisions name no model and count zero generations, while model-backed decisions identify their provider/model and count the actual generation. Invalid or contradictory provenance fails before output is created. The model-backed smoke is optional, local-only, capped at one generation per task, and has no retry, repair, reprompt, or provider fallback. `HARD_GATE` never performs the requested blocked action.
 
 See [the architecture diagram](docs/architecture.png), [the demo script](DEMO_SCRIPT.md), and [the limitations](DISCLOSURES.md).
 

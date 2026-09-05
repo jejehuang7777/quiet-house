@@ -5,7 +5,7 @@ from collections.abc import Callable
 from strands import Agent
 from strands.models.ollama import OllamaModel
 
-from .models import RouteDecision, SyntheticTask
+from .models import DecisionProvenance, DecisionResult, RouteDecision, SyntheticTask
 
 
 SYSTEM_PROMPT = """You route one synthetic work item for a careful professional agent.
@@ -23,10 +23,10 @@ MODEL_ID = "qwen3:14b"
 MODEL_OPTIONS = {"temperature": 0, "seed": 46}
 
 
-DecisionProvider = Callable[[SyntheticTask], RouteDecision]
+DecisionProvider = Callable[[SyntheticTask], DecisionResult]
 
 
-def decide_with_strands(task: SyntheticTask) -> RouteDecision:
+def decide_with_strands(task: SyntheticTask) -> DecisionResult:
     model = OllamaModel(
         host=MODEL_HOST,
         model_id=MODEL_ID,
@@ -42,5 +42,13 @@ def decide_with_strands(task: SyntheticTask) -> RouteDecision:
     result = agent(task.prompt, structured_output_model=RouteDecision)
     if result.structured_output is None:
         raise RuntimeError("STRUCTURED_OUTPUT_ABSENT")
-    return RouteDecision.model_validate(result.structured_output)
-
+    decision = RouteDecision.model_validate(result.structured_output)
+    return DecisionResult(
+        decision=decision,
+        provenance=DecisionProvenance(
+            source_kind="model_backed",
+            provider_id="local_ollama",
+            model_id=MODEL_ID,
+            generation_count=1,
+        ),
+    )
