@@ -76,6 +76,33 @@ class WorkflowTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 run_queue([task("auto-test", "AUTO", False)], root, decision_provider=lambda _: injected(fixed))
 
+    def test_existing_output_root_fails_before_provider_without_mutation(self) -> None:
+        calls = 0
+
+        def provider(_: SyntheticTask) -> DecisionResult:
+            nonlocal calls
+            calls += 1
+            return injected(RouteDecision(route="AUTO", reason="unused", interrupt_now=False))
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "smoke"
+            root.mkdir()
+            marker = root / "existing.txt"
+            marker.write_text("preserve me", encoding="utf-8")
+            with self.assertRaises(FileExistsError):
+                run_queue([task("auto-test", "AUTO", False)], root, decision_provider=provider)
+            self.assertEqual(calls, 0)
+            self.assertEqual(list(root.iterdir()), [marker])
+            self.assertEqual(marker.read_text(encoding="utf-8"), "preserve me")
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / "broken-output-link"
+            root.symlink_to(Path(directory) / "missing-target", target_is_directory=True)
+            with self.assertRaises(FileExistsError):
+                run_queue([task("auto-test", "AUTO", False)], root, decision_provider=provider)
+            self.assertEqual(calls, 0)
+            self.assertTrue(root.is_symlink())
+
     def test_more_than_four_tasks_fail_before_provider_call(self) -> None:
         calls = 0
 
@@ -114,6 +141,15 @@ class WorkflowTests(unittest.TestCase):
     def test_invalid_provenance_fails_before_any_output_write(self) -> None:
         invalid_results = [
             {"decision": {"route": "AUTO", "reason": "Missing provenance.", "interrupt_now": False}},
+            {
+                "decision": {"route": "AUTO", "reason": "Malformed provenance.", "interrupt_now": False},
+                "provenance": {
+                    "source_kind": "injected_deterministic",
+                    "provider_id": "bad_fixture",
+                    "model_id": None,
+                    "generation_count": "not-an-integer",
+                },
+            },
             {
                 "decision": {"route": "AUTO", "reason": "Contradictory provenance.", "interrupt_now": False},
                 "provenance": {

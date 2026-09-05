@@ -93,6 +93,8 @@ def run_queue(
         raise ValueError("TASK_COUNT_MUST_BE_BETWEEN_1_AND_4")
     if len({task.task_id for task in task_list}) != len(task_list):
         raise ValueError("TASK_IDS_MUST_BE_UNIQUE")
+    if os.path.lexists(output_root):
+        raise FileExistsError(f"OUTPUT_ROOT_ALREADY_EXISTS: {output_root}")
 
     resolved: list[DecisionResult] = []
     for task in task_list:
