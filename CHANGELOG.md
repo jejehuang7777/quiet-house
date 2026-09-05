@@ -4,7 +4,7 @@ All notable changes to this project will be documented here.
 
 ## [Unreleased]
 
-- No changes yet.
+- Made receipt provenance explicit and schema-validated so injected runs no longer claim model use and summaries count only declared model-backed generations.
 
 ## [0.1.0-alpha.1] - 2026-09-04
 

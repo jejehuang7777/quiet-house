@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .agent import DecisionProvider, decide_with_strands
-from .models import Outcome, RouteDecision, SyntheticTask
+from .models import DecisionResult, Outcome, RouteDecision, SyntheticTask
 
 
 MAX_MODEL_GENERATIONS = 4
@@ -93,18 +93,24 @@ def run_queue(
         raise ValueError("TASK_COUNT_MUST_BE_BETWEEN_1_AND_4")
     if len({task.task_id for task in task_list}) != len(task_list):
         raise ValueError("TASK_IDS_MUST_BE_UNIQUE")
+    if os.path.lexists(output_root):
+        raise FileExistsError(f"OUTPUT_ROOT_ALREADY_EXISTS: {output_root}")
+
+    resolved: list[DecisionResult] = []
+    for task in task_list:
+        resolved.append(DecisionResult.model_validate(decision_provider(task)))
 
     output_root.mkdir(parents=True, exist_ok=False)
     receipt_summaries: list[dict[str, Any]] = []
-    for index, task in enumerate(task_list, start=1):
-        decision = decision_provider(task)
+    for index, (task, result) in enumerate(zip(task_list, resolved, strict=True), start=1):
+        decision = result.decision
         outcome = _execute(task, decision, output_root)
         matched = (
             decision.route == task.expected_route
             and decision.interrupt_now == task.expected_interrupt_now
         )
         receipt = {
-            "schema_version": "1.0",
+            "schema_version": "1.1",
             "synthetic": True,
             "sequence": index,
             "task": {
@@ -119,10 +125,8 @@ def run_queue(
             },
             "decision_match": matched,
             "outcome": outcome.model_dump(),
-            "model": {
-                "provider": "local_ollama",
-                "model_id": "qwen3:14b",
-                "generation_number": index,
+            "decision_provenance": {
+                **result.provenance.model_dump(),
                 "retry": 0,
                 "reprompt": 0,
                 "repair": 0,
@@ -149,11 +153,11 @@ def run_queue(
         )
 
     summary = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "synthetic": True,
         "status": "PASS" if all(item["decision_match"] for item in receipt_summaries) else "FAIL",
         "task_count": len(task_list),
-        "model_generation_count": len(task_list),
+        "model_generation_count": sum(item.provenance.generation_count for item in resolved),
         "retry_count": 0,
         "reprompt_count": 0,
         "repair_count": 0,
